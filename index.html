@@ -1177,6 +1177,7 @@ function activarAnalytics() {
 
 
 
+
 function eliminarCookiesAnalytics() {
   const nombres = document.cookie
     .split(';')
@@ -1185,34 +1186,13 @@ function eliminarCookiesAnalytics() {
       nombre === '_ga' || nombre.startsWith('_ga_')
     );
 
-  const partes = location.hostname.split('.');
-  const dominios = [''];
-
-  for (let i = 0; i < partes.length - 1; i++) {
-    dominios.push(partes.slice(i).join('.'));
-  }
-
-  const rutas = ['/'];
-  const segmentos = location.pathname.split('/').filter(Boolean);
-  let ruta = '';
-
-  segmentos.forEach(segmento => {
-    ruta += '/' + segmento;
-    rutas.push(ruta);
-    rutas.push(ruta + '/');
-  });
-
   nombres.forEach(nombre => {
-    dominios.forEach(dominio => {
-      rutas.forEach(path => {
-        document.cookie =
-          nombre + '=; Max-Age=0; path=' + path +
-          (dominio ? '; domain=' + dominio : '') +
-          '; SameSite=Lax';
-      });
-    });
+    document.cookie =
+      nombre + '=; Max-Age=0; path=/; domain=' +
+      location.hostname + '; SameSite=Lax';
   });
 }
+
 
 function guardarCookies(aceptar) {
   localStorage.setItem(
