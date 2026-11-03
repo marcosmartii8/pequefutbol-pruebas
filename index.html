@@ -1178,6 +1178,7 @@ function activarAnalytics() {
 
 
 
+
 function eliminarCookiesAnalytics() {
   const nombres = document.cookie
     .split(';')
@@ -1187,12 +1188,16 @@ function eliminarCookiesAnalytics() {
     );
 
   nombres.forEach(nombre => {
+    // Eliminar cookie asociada al dominio actual
     document.cookie =
       nombre + '=; Max-Age=0; path=/; domain=' +
       location.hostname + '; SameSite=Lax';
+
+    // Eliminar posible cookie sin atributo Domain
+    document.cookie =
+      nombre + '=; Max-Age=0; path=/; SameSite=Lax';
   });
 }
-
 
 function guardarCookies(aceptar) {
   localStorage.setItem(
@@ -1201,11 +1206,20 @@ function guardarCookies(aceptar) {
   );
 
   if (!aceptar) {
+    gtag('consent', 'update', {
+      analytics_storage: 'denied'
+    });
+
     eliminarCookiesAnalytics();
   }
 
-  window.location.reload();
+  // Dar tiempo a completar la actualización
+  // del consentimiento antes de recargar.
+  setTimeout(function() {
+    window.location.reload();
+  }, 300);
 }
+
 
 
 
